@@ -16,10 +16,12 @@ type SIDs = [SID]
 
 
 
-getCurrentUserSID:: IO (Either String SID)
+getCurrentUserSID:: IO (Either String (String,SID))
 getCurrentUserSID = do
+    (!idnucode, !idnuout, !iderr) <- readProcessWithExitCode "id" ["-nu"] ""
     (!idcode, !idout, !iderr) <- readProcessWithExitCode "id" ["-u"] ""
     let uid = filter isDigit idout
+        username = filter (\x-> x /= '\r' && x /= '\n') idnuout
     if idcode /= ExitSuccess then return $! Left $! "id -u returned " ++ 
             iderr
         else do
@@ -27,8 +29,8 @@ getCurrentUserSID = do
                 ["--uid-to-sid=" ++ uid] ""
             if wbcode /= ExitSuccess
                 then return $! Left $! "wbinfo returned " ++ wberr
-                else return $! Right $! SIDUser $!
-                    filter (\x-> isDigit x || isAlpha x || x=='-') wbout
+                else return $! Right $! (username, SIDUser $!
+                    filter (\x-> isDigit x || isAlpha x || x=='-') wbout)
     
 
 getCurrentGroupsSIDs:: SID-> IO (Either String [SID])
