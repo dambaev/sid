@@ -18,4 +18,4 @@ library
   exposed-modules:     Network.AD.SID
   -- other-modules:       
   hs-source-dirs: src
-  build-depends:       base, process
+  build-depends:       base, process, MissingH
