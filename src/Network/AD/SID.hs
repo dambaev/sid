@@ -21,6 +21,8 @@ getCurrentUserSID = do
         else do
             (!wbcode, !wbout, !wberr) <- readProcessWithExitCode "wbinfo" 
                 ["--uid-to-sid " ++ idout] ""
+            putStrLn $! wbout
+            putStrLn $! wberr
             if wbcode /= ExitSuccess
                 then return $! Left $! "wbinfo returned " ++ show wbcode
                 else return $! Right $! SIDUser wbout
