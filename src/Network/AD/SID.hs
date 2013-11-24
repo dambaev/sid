@@ -40,3 +40,4 @@ getCurrentGroupsSIDs (SIDUser sid ) = do
         else do
             let !lined = lines wbout
             return $! Right $! map (SIDGroup) lined
+getCurrentGroupsSIDs _ = return $! Left "must be SIDUser"
