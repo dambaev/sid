@@ -21,7 +21,7 @@ getCurrentUserSID = do
     (!idnucode, !idnuout, !iderr) <- readProcessWithExitCode "id" ["-nu"] ""
     (!idcode, !idout, !iderr) <- readProcessWithExitCode "id" ["-u"] ""
     let uid = filter isDigit idout
-        username = filter (\x-> x /= '\r' && x /= '\n') idnuout
+        username = dropWhile isSpace $! filter (\x-> x /= '\r' && x /= '\n') idnuout
     if idcode /= ExitSuccess then return $! Left $! "id -u returned " ++ 
             iderr
         else do
@@ -29,7 +29,7 @@ getCurrentUserSID = do
             system "env"
             (!wbcode, !wbout, !wberr) <- readProcessWithExitCode "wbinfo" 
                 -- ["--uid-to-sid=" ++ uid] ""
-                [ "-n" ++ username ] ""
+                [ "-n " ++ username ] ""
             if wbcode /= ExitSuccess
                 then return $! Left $! "wbinfo returned " ++ wberr
                 else return $! Right $! (username, SIDUser $!
