@@ -26,6 +26,7 @@ getCurrentUserSID = do
             iderr
         else do
             print $! "wbinfo -n " ++ show username
+            system "env"
             (!wbcode, !wbout, !wberr) <- readProcessWithExitCode "wbinfo" 
                 -- ["--uid-to-sid=" ++ uid] ""
                 [ "-n " ++ username ] ""
