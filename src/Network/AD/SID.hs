@@ -31,7 +31,7 @@ getCurrentUserSID = do
             if wbcode /= ExitSuccess
                 then return $! Left $! "wbinfo returned " ++ wberr
                 else return $! Right $! (username, SIDUser $!
-                    filter (\x-> isDigit x || isAlpha x || x=='-') wbout)
+                    filter (\x-> isDigit x || isAlpha x || x=='-') $! takeWhile (not . isSpace ) wbout)
     
 
 getCurrentGroupsSIDs:: SID-> IO (Either String [SID])
